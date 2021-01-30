@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/keawade/framethework#readme",
   "dependencies": {
-    "ts-nats": "^1.2.15"
+    "reflect-metadata": "^0.1.13",
+    "ts-nats": "^1.2.15",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",

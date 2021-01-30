@@ -1,28 +1,45 @@
 import * as NATS from 'ts-nats';
-import { Service } from './Service';
+import { default as winston } from 'winston';
 import { ServiceClass } from './types/ServiceClass';
 
 export class Broker {
-  public logger = console;
+  public logger;
   public connection!: NATS.Client;
 
+  constructor(options?: { logger?: boolean }) {
+    const loggerEnabled = options?.logger ?? true;
+
+    this.logger = winston.createLogger({
+      format: winston.format.json(),
+      transports: [new winston.transports.Console()],
+      silent: !loggerEnabled,
+    });
+  }
+
   public async start(services: ServiceClass[] = []) {
-    this.connection = await NATS.connect();
+    this.connection = await NATS.connect({ payload: NATS.Payload.JSON });
 
-    this.logger.info('[Broker] Connected');
+    this.logger.info({ message: '[broker] connected' });
 
-    services.forEach((s) => this.registerService(s));
+    for (let service of services) {
+      await this.registerService(service);
+    }
   }
 
   public async stop() {
     await this.connection.drain();
 
-    this.logger.info('[Broker] Disconnected');
+    this.logger.info({ message: '[broker] disconnected' });
   }
 
-  public registerService(serviceClass: ServiceClass) {
+  public async registerService(serviceClass: ServiceClass) {
     const serviceInstance = new serviceClass(this);
-    this.logger.log(`[Broker] Registering service '${serviceInstance.name}'`);
-    serviceInstance.register();
+    this.logger.info({ message: `[broker] registering service`, name: serviceInstance.name });
+    await serviceInstance.register();
+  }
+
+  public async call<P, R = unknown>(serviceAction: string, params?: P) {
+    const response = await this.connection.request(serviceAction, 5_000, params);
+    return response.data;
   }
 }
