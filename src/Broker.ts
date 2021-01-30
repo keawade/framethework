@@ -38,7 +38,10 @@ export class Broker {
     await serviceInstance.register();
   }
 
-  public async call<P, R = unknown>(serviceAction: string, params?: P) {
+  public async call<Params, Response = unknown>(
+    serviceAction: string,
+    params?: Params,
+  ): Promise<Response> {
     const response = await this.connection.request(serviceAction, 5_000, params);
     return response.data;
   }

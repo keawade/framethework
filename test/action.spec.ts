@@ -28,7 +28,7 @@ describe('action decorator', () => {
   });
 
   it('should be able to use params', async () => {
-    const response = await broker.call<IAddParams>('coolService.add', { a: 1, b: 2 });
+    const response = await broker.call<IAddParams, number>('coolService.add', { a: 1, b: 2 });
 
     const expected = 3;
     expect(response).toBe(expected);
