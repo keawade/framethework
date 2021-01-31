@@ -1,4 +1,4 @@
-import { action, Broker, IEventContext, event, Service, IActionContext } from '../../src';
+import { action, Broker, event, IEvent, Service } from '../../src';
 
 export class EventService extends Service {
   public name = 'eventService';
@@ -15,7 +15,7 @@ export class EventService extends Service {
   }
 
   @event({ name: 'foo.bar.baz' })
-  public handleEvent(ctx: IEventContext) {
-    this.events.push(ctx.event);
+  public handleEvent(event: IEvent<unknown>) {
+    this.events.push(event);
   }
 }

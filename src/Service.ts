@@ -2,9 +2,7 @@ import { MsgCallback, Subscription } from 'ts-nats';
 import { Broker } from './Broker';
 import { ACTION_SYMBOL, IActionMetadata } from './decorators/action';
 import { EVENT_SYMBOL, IEventMetadata } from './decorators/event';
-import { IActionContext, IEventContext } from './types';
-
-export type IHandlerMethod<Context> = (ctx: Context) => Promise<unknown>;
+import { ActionHandlerMethod, EventHandlerMethod } from './types';
 
 export abstract class Service {
   protected logger;
@@ -46,7 +44,7 @@ export abstract class Service {
           `${this.name}.${metadata.name}`,
           this.createActionHandler(
             metadata,
-            ((this[key as keyof this] as unknown) as IHandlerMethod<IActionContext>).bind(this),
+            ((this[key as keyof this] as unknown) as ActionHandlerMethod).bind(this),
           ),
         );
       case 'event':
@@ -54,7 +52,7 @@ export abstract class Service {
           metadata.name,
           this.createEventHandler(
             metadata,
-            ((this[key as keyof this] as unknown) as IHandlerMethod<IEventContext>).bind(this),
+            ((this[key as keyof this] as unknown) as EventHandlerMethod).bind(this),
           ),
         );
     }
@@ -62,18 +60,16 @@ export abstract class Service {
 
   private createActionHandler(
     actionMetadata: IActionMetadata,
-    method: IHandlerMethod<IActionContext>,
+    boundActionHandlerMethod: ActionHandlerMethod,
   ): MsgCallback {
     return (err, msg) => {
       if (err) {
         throw err;
       }
 
-      const response = method({
-        actionName: actionMetadata.name,
-        params: msg.data,
-        broker: this.broker,
-      });
+      // TODO: Input schemas and validation
+
+      const response = boundActionHandlerMethod(msg.data);
 
       if (msg.reply) {
         this.broker.connection.publish(msg.reply, response);
@@ -83,19 +79,16 @@ export abstract class Service {
 
   private createEventHandler(
     eventMetadata: IEventMetadata,
-    method: IHandlerMethod<IEventContext>,
+    boundEventHandlerMethod: EventHandlerMethod,
   ): MsgCallback {
     return (err, msg) => {
       if (err) {
         throw err;
       }
 
-      method({
-        event: {
-          ...msg.data,
-          name: eventMetadata.name,
-        },
-        broker: this.broker,
+      boundEventHandlerMethod({
+        ...msg.data,
+        name: eventMetadata.name,
       });
     };
   }

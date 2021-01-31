@@ -1,4 +1,4 @@
 export { Broker } from './Broker';
 export { Service } from './Service';
-export { IActionContext, IEventContext, IEvent } from './types';
+export { ActionHandlerMethod, EventHandlerMethod, IEvent } from './types';
 export * from './decorators';

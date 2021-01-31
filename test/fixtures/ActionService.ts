@@ -1,4 +1,4 @@
-import { action, Broker, IActionContext, Service } from '../../src';
+import { action, Broker, Service } from '../../src';
 
 export interface IAddParams {
   a: number;
@@ -23,7 +23,7 @@ export class ActionService extends Service {
   }
 
   @action()
-  public add(ctx: IActionContext<IAddParams>) {
-    return ctx.params.a + ctx.params.b;
+  public add(params: IAddParams) {
+    return params.a + params.b;
   }
 }

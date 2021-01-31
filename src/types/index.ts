@@ -1,3 +1,3 @@
-export * from './IActionContext';
-export * from './IEventContext';
+export * from './ActionHandlerMethod';
+export * from './EventHandlerMethod';
 export * from './IEvent';
