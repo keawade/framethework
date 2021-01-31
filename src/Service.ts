@@ -46,6 +46,7 @@ export abstract class Service {
             metadata,
             ((this[key as keyof this] as unknown) as ActionHandlerMethod).bind(this),
           ),
+          { queue: this.name },
         );
       case 'event':
         return this.broker.connection.subscribe(
@@ -54,6 +55,7 @@ export abstract class Service {
             metadata,
             ((this[key as keyof this] as unknown) as EventHandlerMethod).bind(this),
           ),
+          { queue: this.name },
         );
     }
   }
