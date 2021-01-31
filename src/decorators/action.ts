@@ -3,6 +3,7 @@ import 'reflect-metadata';
 export const ACTION_SYMBOL = Symbol('FRAMETHEWORK_ACTION');
 
 export interface IActionMetadata {
+  endpointType: 'action';
   name: string;
 }
 
@@ -24,6 +25,7 @@ export function action(properties?: IActionDecoratorParams) {
     const newMetadata: { [ACTION_SYMBOL]: IActionMetadata } = {
       ...keyMetadata,
       [ACTION_SYMBOL]: {
+        endpointType: 'action',
         name: actionName,
       },
     };

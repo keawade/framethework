@@ -45,7 +45,7 @@ export class Broker {
     serviceAction: string,
     params?: Params,
   ): Promise<Response> {
-    const response = await this.connection.request(serviceAction, 5_000, params);
+    const response = await this.connection.request(`action.${serviceAction}`, 5_000, params);
     return response.data;
   }
 
@@ -56,6 +56,6 @@ export class Broker {
       timestamp: formatISO(new Date()),
       data: payload ?? null,
     };
-    return this.connection.publish(eventName, event);
+    return this.connection.publish(`event.${eventName}`, event);
   }
 }

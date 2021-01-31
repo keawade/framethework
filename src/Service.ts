@@ -20,28 +20,27 @@ export abstract class Service {
 
     const actionSubscriptions = metadataByKey
       .filter(({ metadata }) => metadata[ACTION_SYMBOL])
-      .map(({ key, metadata }) => this.registerEndpoint('action', key, metadata[ACTION_SYMBOL]));
+      .map(({ key, metadata }) => this.registerEndpoint(key, metadata[ACTION_SYMBOL]));
     const eventSubscriptions = metadataByKey
       .filter(({ metadata }) => metadata[EVENT_SYMBOL])
-      .map(({ key, metadata }) => this.registerEndpoint('event', key, metadata[EVENT_SYMBOL]));
+      .map(({ key, metadata }) => this.registerEndpoint(key, metadata[EVENT_SYMBOL]));
 
     await Promise.all([...actionSubscriptions, ...eventSubscriptions]);
   }
 
   private registerEndpoint(
-    endpointType: 'action' | 'event',
     key: string,
     metadata: IActionMetadata | IEventMetadata,
   ): Promise<Subscription> {
     this.logger.info({
-      message: `[service] registering ${endpointType}`,
+      message: `[service] registering ${metadata.endpointType}`,
       metadata,
     });
 
-    switch (endpointType) {
+    switch (metadata.endpointType) {
       case 'action':
         return this.broker.connection.subscribe(
-          `${this.name}.${metadata.name}`,
+          `action.${this.name}.${metadata.name}`,
           this.createActionHandler(
             metadata,
             ((this[key as keyof this] as unknown) as ActionHandlerMethod).bind(this),
@@ -50,12 +49,12 @@ export abstract class Service {
         );
       case 'event':
         return this.broker.connection.subscribe(
-          metadata.name,
+          `event.${metadata.name}`,
           this.createEventHandler(
             metadata,
             ((this[key as keyof this] as unknown) as EventHandlerMethod).bind(this),
           ),
-          { queue: this.name },
+          { queue: metadata.grouped ? this.name : undefined },
         );
     }
   }
