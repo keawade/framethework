@@ -1,15 +1,63 @@
 name: CI
-on: push
+
+on:
+  push:
+    - '**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run linter checks
         run: npm run lint
+
       - name: Start NATS server
         run: docker-compose up -d
+
       - name: Run tests
         run: npm run test
+
+      - name: Build library
+        if: env.IS_PR == 'false'
+        run: npm run build
+
+      - name: Setup variables
+        if: env.IS_PR == 'false'
+        run: |
+          export APP_VERSION=$(jq -r .version package.json)
+          export BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          echo "::set-env name=BRANCH_NAME::$BRANCH_NAME"
+          if [ $BRANCH_NAME = "main" ]; then
+            echo "::set-env name=PACKAGE_VERSION::$APP_VERSION"
+            echo "::set-env name=VERSION_TAG::latest"
+          else
+            echo "::set-env name=PACKAGE_VERSION::$APP_VERSION-alpha.$GITHUB_RUN_NUMBER"
+            echo "::set-env name=VERSION_TAG::alpha"
+          fi
+
+      - name: NPM auth
+        if: env.IS_PR == 'false'
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          cat <<EOF >> "$HOME/.npmrc"
+          //registry=https://registry.npmjs.org
+          //https://registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
+          EOF
+
+      - name: Version
+        if: env.BRANCH_NAME != 'main' && env.IS_PR == 'false'
+        run: npm version "$PACKAGE_VERSION" --no-git-tag-version
+
+      - name: NPM Publish
+        if: env.IS_PR == 'false'
+        run: npm publish --tag=$VERSION_TAG
