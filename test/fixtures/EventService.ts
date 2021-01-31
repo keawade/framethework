@@ -10,12 +10,12 @@ export class EventService extends Service {
   }
 
   @action()
-  public getEvents() {
+  public getEvents(): unknown[] {
     return this.events;
   }
 
   @event({ name: 'foo.bar.baz' })
-  public handleEvent(event: IEvent<unknown>) {
+  public handleEvent(event: IEvent<unknown>): void {
     this.events.push(event);
   }
 }

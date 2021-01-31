@@ -11,7 +11,12 @@ export interface IEventDecoratorParams {
 }
 
 export function event(properties: IEventDecoratorParams) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    target: Object,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ): PropertyDescriptor => {
     const keyMetadata = Reflect.getMetadata(propertyKey, target);
 
     const newMetadata = {

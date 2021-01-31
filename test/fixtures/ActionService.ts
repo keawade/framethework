@@ -13,17 +13,17 @@ export class ActionService extends Service {
   }
 
   @action()
-  public foo() {
+  public foo(): 'foo' {
     return 'foo';
   }
 
   @action({ name: 'wut' })
-  public bar() {
+  public bar(): 'bar' {
     return 'bar';
   }
 
   @action()
-  public add(params: IAddParams) {
+  public add(params: IAddParams): number {
     return params.a + params.b;
   }
 }

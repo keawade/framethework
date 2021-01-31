@@ -11,7 +11,12 @@ export interface IActionDecoratorParams {
 }
 
 export function action(properties?: IActionDecoratorParams) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    target: Object,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ): PropertyDescriptor => {
     const actionName = properties?.name ?? propertyKey;
 
     const keyMetadata = Reflect.getMetadata(propertyKey, target);

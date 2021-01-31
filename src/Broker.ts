@@ -19,23 +19,23 @@ export class Broker {
     });
   }
 
-  public async start(services: ServiceClass[] = []) {
+  public async start(services: ServiceClass[] = []): Promise<void> {
     this.connection = await NATS.connect({ payload: NATS.Payload.JSON });
 
     this.logger.info({ message: '[broker] connected' });
 
-    for (let service of services) {
+    for (const service of services) {
       await this.registerService(service);
     }
   }
 
-  public async stop() {
+  public async stop(): Promise<void> {
     await this.connection.drain();
 
     this.logger.info({ message: '[broker] disconnected' });
   }
 
-  public async registerService(serviceClass: ServiceClass) {
+  public async registerService(serviceClass: ServiceClass): Promise<void> {
     const serviceInstance = new serviceClass(this);
     this.logger.info({ message: `[broker] registering service`, name: serviceInstance.name });
     await serviceInstance.registerServiceEndpoints();
