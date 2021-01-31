@@ -1,5 +1,9 @@
 export interface IEvent<Payload = unknown> {
-  /** uuid v4 */
+  /**
+   * cuid
+   *
+   * @see http://usecuid.org/
+   */
   readonly id: string;
   readonly name: string;
   /** ISO8601 date-time */

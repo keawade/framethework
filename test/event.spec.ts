@@ -3,6 +3,7 @@ import { EventService } from './fixtures/EventService';
 import { default as validator } from 'validator';
 import { differenceInMilliseconds, parseISO } from 'date-fns';
 import { loiter } from './testUtils/loiter';
+import { default as cuid } from 'cuid';
 
 describe('events', () => {
   let broker: Broker;
@@ -48,7 +49,7 @@ describe('events', () => {
     const difference = differenceInMilliseconds(new Date(), parseISO(actual[0].timestamp));
     expect(difference).toBeGreaterThanOrEqual(0);
     expect(difference).toBeLessThanOrEqual(1_500);
-    expect(validator.isUUID(actual[0].id, 4)).toBe(true);
+    expect(cuid.isCuid(actual[0].id)).toBe(true);
     expect(validator.isISO8601(actual[0].timestamp, { strict: true })).toBe(true);
   });
 
@@ -71,7 +72,7 @@ describe('events', () => {
     const difference = differenceInMilliseconds(new Date(), parseISO(actual[0].timestamp));
     expect(difference).toBeGreaterThanOrEqual(0);
     expect(difference).toBeLessThanOrEqual(1_500);
-    expect(validator.isUUID(actual[0].id, 4)).toBe(true);
+    expect(cuid.isCuid(actual[0].id)).toBe(true);
     expect(validator.isISO8601(actual[0].timestamp, { strict: true })).toBe(true);
   });
 });
