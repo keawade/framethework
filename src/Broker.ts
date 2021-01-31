@@ -1,6 +1,9 @@
 import * as NATS from 'ts-nats';
 import { default as winston } from 'winston';
 import { ServiceClass } from './types/ServiceClass';
+import { v4 as uuid } from 'uuid';
+import { formatISO } from 'date-fns';
+import { IEvent } from './types';
 
 export class Broker {
   public logger;
@@ -35,7 +38,7 @@ export class Broker {
   public async registerService(serviceClass: ServiceClass) {
     const serviceInstance = new serviceClass(this);
     this.logger.info({ message: `[broker] registering service`, name: serviceInstance.name });
-    await serviceInstance.register();
+    await serviceInstance.registerServiceEndpoints();
   }
 
   public async call<Params, Response = unknown>(
@@ -44,5 +47,15 @@ export class Broker {
   ): Promise<Response> {
     const response = await this.connection.request(serviceAction, 5_000, params);
     return response.data;
+  }
+
+  public emit<Payload>(eventName: string, payload?: Payload): void {
+    const event: IEvent = {
+      id: uuid(),
+      name: eventName,
+      timestamp: formatISO(new Date()),
+      data: payload ?? null,
+    };
+    return this.connection.publish(eventName, event);
   }
 }

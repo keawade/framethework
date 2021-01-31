@@ -1,7 +1,7 @@
 import { Broker } from '../src';
 import { ActionService, IAddParams } from './fixtures/ActionService';
 
-describe('action decorator', () => {
+describe('actions', () => {
   let broker: Broker;
 
   beforeEach(async () => {
@@ -14,23 +14,23 @@ describe('action decorator', () => {
   });
 
   it('should respond to call on vanilla action', async () => {
-    const response = await broker.call('coolService.foo');
+    const actual = await broker.call('actionService.foo');
 
     const expected = 'foo';
-    expect(response).toBe(expected);
+    expect(actual).toBe(expected);
   });
 
   it('should respond to call on action with custom name', async () => {
-    const response = await broker.call('coolService.wut');
+    const actual = await broker.call('actionService.wut');
 
     const expected = 'bar';
-    expect(response).toBe(expected);
+    expect(actual).toBe(expected);
   });
 
   it('should be able to use params', async () => {
-    const response = await broker.call<IAddParams, number>('coolService.add', { a: 1, b: 2 });
+    const actual = await broker.call<IAddParams, number>('actionService.add', { a: 1, b: 2 });
 
     const expected = 3;
-    expect(response).toBe(expected);
+    expect(actual).toBe(expected);
   });
 });

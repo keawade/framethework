@@ -1,5 +1,4 @@
-import { createInbox } from 'ts-nats/lib/util';
-import { action, Broker, Context, Service } from '../../src';
+import { action, Broker, IActionContext, Service } from '../../src';
 
 export interface IAddParams {
   a: number;
@@ -7,7 +6,7 @@ export interface IAddParams {
 }
 
 export class ActionService extends Service {
-  public name = 'coolService';
+  public name = 'actionService';
 
   constructor(broker: Broker) {
     super(broker);
@@ -24,7 +23,7 @@ export class ActionService extends Service {
   }
 
   @action()
-  public add(ctx: Context<IAddParams>) {
+  public add(ctx: IActionContext<IAddParams>) {
     return ctx.params.a + ctx.params.b;
   }
 }

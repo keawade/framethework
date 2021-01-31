@@ -2,16 +2,22 @@ import 'reflect-metadata';
 
 export const EVENT_SYMBOL = Symbol('FRAMETHEWORK_EVENT');
 
-export function event(properties?: { name?: string }) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-    const eventName = properties?.name ?? propertyKey;
+export interface IEventMetadata {
+  name: string;
+}
 
+export interface IEventDecoratorParams {
+  name: string;
+}
+
+export function event(properties: IEventDecoratorParams) {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const keyMetadata = Reflect.getMetadata(propertyKey, target);
 
     const newMetadata = {
       ...keyMetadata,
       [EVENT_SYMBOL]: {
-        name: eventName,
+        name: properties.name,
       },
     };
 
