@@ -8,3 +8,6 @@
 - Middlewares
 - Not found errors
 - Emit/broadcast
+- API gateway
+- Action JSON schema param validation
+- OpenAPI docs generation from action params
