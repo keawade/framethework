@@ -1,23 +1,32 @@
 {
-  "name": "framethework",
-  "version": "0.1.0",
+  "name": "@keawade/framethework",
+  "version": "0.1.1",
   "description": "Microservices framework built on NATS",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsc",
+    "bump": "npm --no-git-tag-version version",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
     "up": "docker-compose up -d"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/keawade/framethework.git"
+    "url": "https://github.com/keawade/framethework.git"
   },
   "keywords": [
     "microservices",
     "nats",
     "framework"
   ],
-  "author": "Keith Wade <keawade@protonmail.com>",
+  "author": {
+    "name": "Keith Wade",
+    "email": "keawade@protonmail.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/keawade/framethework/issues"
