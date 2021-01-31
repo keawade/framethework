@@ -27,12 +27,7 @@ jobs:
       - name: Run tests
         run: npm run test
 
-      - name: Build library
-        if: env.IS_PR == 'false'
-        run: npm run build
-
       - name: Setup variables
-        if: env.IS_PR == 'false'
         run: |
           export APP_VERSION=$(jq -r .version package.json)
           export BRANCH_NAME=${GITHUB_REF#refs/heads/}
@@ -45,6 +40,10 @@ jobs:
             echo "::set-env name=PACKAGE_VERSION::$APP_VERSION-alpha.$GITHUB_RUN_NUMBER"
             echo "::set-env name=VERSION_TAG::alpha"
           fi
+
+      - name: Build library
+        if: env.IS_PR == 'false'
+        run: npm run build
 
       - name: NPM auth
         if: env.IS_PR == 'false'
