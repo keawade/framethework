@@ -37,6 +37,7 @@ jobs:
           export APP_VERSION=$(jq -r .version package.json)
           export BRANCH_NAME=${GITHUB_REF#refs/heads/}
           echo "::set-env name=BRANCH_NAME::$BRANCH_NAME"
+          echo "::set-env name=IS_PR::${{ github.event_name == 'pull_request' }}"
           if [ $BRANCH_NAME = "main" ]; then
             echo "::set-env name=PACKAGE_VERSION::$APP_VERSION"
             echo "::set-env name=VERSION_TAG::latest"
