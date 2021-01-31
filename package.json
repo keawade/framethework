@@ -1,6 +1,6 @@
 {
   "name": "@keawade/framethework",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Microservices framework built on NATS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
