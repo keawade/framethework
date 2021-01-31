@@ -31,14 +31,14 @@ jobs:
         run: |
           export APP_VERSION=$(jq -r .version package.json)
           export BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          echo "::set-env name=BRANCH_NAME::$BRANCH_NAME"
-          echo "::set-env name=IS_PR::${{ github.event_name == 'pull_request' }}"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "IS_PR=${{ github.event_name == 'pull_request' }}" >> $GITHUB_ENV
           if [ $BRANCH_NAME = "main" ]; then
-            echo "::set-env name=PACKAGE_VERSION::$APP_VERSION"
-            echo "::set-env name=VERSION_TAG::latest"
+            echo "PACKAGE_VERSION=$APP_VERSION" >> $GITHUB_ENV
+            echo "VERSION_TAG=latest" >> $GITHUB_ENV
           else
-            echo "::set-env name=PACKAGE_VERSION::$APP_VERSION-alpha.$GITHUB_RUN_NUMBER"
-            echo "::set-env name=VERSION_TAG::alpha"
+            echo "PACKAGE_VERSION=$APP_VERSION-alpha.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+            echo "VERSION_TAG=alpha" >> $GITHUB_ENV
           fi
 
       - name: Build library
