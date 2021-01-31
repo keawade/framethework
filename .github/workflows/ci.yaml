@@ -61,4 +61,4 @@ jobs:
 
       - name: NPM Publish
         if: env.IS_PR == 'false'
-        run: npm publish --tag=$VERSION_TAG
+        run: npm publish --tag=$VERSION_TAG --access public
