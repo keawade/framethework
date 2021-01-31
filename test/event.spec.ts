@@ -2,9 +2,7 @@ import { Broker, IEvent } from '../src';
 import { EventService } from './fixtures/EventService';
 import { default as validator } from 'validator';
 import { differenceInMilliseconds, parseISO } from 'date-fns';
-
-const loiter = (milliseconds: number) =>
-  new Promise((resolve) => setTimeout(resolve, milliseconds));
+import { loiter } from './testUtils/loiter';
 
 describe('events', () => {
   let broker: Broker;
