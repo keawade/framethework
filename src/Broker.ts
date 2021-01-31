@@ -1,7 +1,7 @@
 import * as NATS from 'ts-nats';
 import { default as winston } from 'winston';
 import { ServiceClass } from './types/ServiceClass';
-import { v4 as uuid } from 'uuid';
+import { default as cuid } from 'cuid';
 import { formatISO } from 'date-fns';
 import { IEvent } from './types';
 
@@ -51,7 +51,7 @@ export class Broker {
 
   public emit<Payload>(eventName: string, payload?: Payload): void {
     const event: IEvent = {
-      id: uuid(),
+      id: cuid(),
       name: eventName,
       timestamp: formatISO(new Date()),
       data: payload ?? null,
