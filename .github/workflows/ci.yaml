@@ -51,8 +51,8 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
           cat <<EOF >> "$HOME/.npmrc"
-          //registry=https://registry.npmjs.org
-          //https://registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
+          registry=https://registry.npmjs.org
+          https://registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
           EOF
 
       - name: Version
