@@ -29,8 +29,11 @@ class MathService extends Service {
 // Create a broker
 const broker = new Broker();
 
-// Start the broker with your service(s)
-broker.start([MathService])
+// Register your service(s) with the broker
+broker.registerService(MathService);
+
+// Start the broker
+broker.start()
   // Call the service
   .then(() => broker.call('math.add', { a: 5, b: 3 }))
   // Print the response

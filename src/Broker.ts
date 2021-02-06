@@ -4,10 +4,12 @@ import { ServiceClass } from './types/ServiceClass';
 import { default as cuid } from 'cuid';
 import { formatISO } from 'date-fns';
 import { IEvent } from './types';
+import { Service } from './Service';
 
 export class Broker {
   public logger;
   public connection!: NATS.Client;
+  private services: Service[] = [];
 
   constructor() {
     this.logger = winston.createLogger({
@@ -16,14 +18,16 @@ export class Broker {
     });
   }
 
-  public async start(services: ServiceClass[] = []): Promise<void> {
+  public async start(): Promise<void> {
     this.connection = await NATS.connect({ payload: NATS.Payload.JSON });
 
     this.logger.info({ message: '[broker] connected' });
 
-    for (const service of services) {
-      await this.registerService(service);
+    this.logger.info({ message: '[broker] starting services...' });
+    for (const serviceInstance of this.services) {
+      await serviceInstance.registerServiceEndpoints();
     }
+    this.logger.info({ message: '[broker] services started!' });
   }
 
   public async stop(): Promise<void> {
@@ -32,7 +36,7 @@ export class Broker {
     this.logger.info({ message: '[broker] disconnected' });
   }
 
-  public async registerService(serviceClass: ServiceClass): Promise<void> {
+  public registerService(serviceClass: ServiceClass): void {
     let serviceInstance;
     try {
       serviceInstance = new serviceClass(this);
@@ -41,7 +45,7 @@ export class Broker {
       throw err;
     }
     this.logger.info({ message: `[broker] registering service`, name: serviceInstance.name });
-    await serviceInstance.registerServiceEndpoints();
+    this.services.push(serviceInstance);
   }
 
   public async call<Params, Response = unknown>(

@@ -17,7 +17,8 @@ describe('readme example', () => {
     }
 
     const broker = new Broker();
-    await broker.start([MathService]);
+    broker.registerService(MathService);
+    await broker.start();
 
     const result: number = await broker.call('math.add', { a: 5, b: 3 });
 

@@ -6,7 +6,8 @@ describe('actions', () => {
 
   beforeEach(async () => {
     broker = new Broker();
-    await broker.start([ActionService]);
+    broker.registerService(ActionService);
+    await broker.start();
   });
 
   afterEach(async () => {

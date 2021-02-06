@@ -10,7 +10,8 @@ describe('events', () => {
 
   beforeEach(async () => {
     broker = new Broker();
-    await broker.start([EventService]);
+    broker.registerService(EventService);
+    await broker.start();
   });
 
   afterEach(async () => {

@@ -39,7 +39,11 @@ export class Runner {
         }
       });
 
-    return this.broker.start(serviceClasses).catch(() => {
+    for (const serviceClass of serviceClasses) {
+      this.broker.registerService(serviceClass);
+    }
+
+    return this.broker.start().catch(() => {
       this.broker.logger.error('Failed to start services.');
       process.exit(1);
     });
