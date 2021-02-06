@@ -5,7 +5,6 @@ import { default as cuid } from 'cuid';
 import { formatISO } from 'date-fns';
 import { IEvent } from './types';
 import { Service } from './Service';
-import { inspect } from 'util';
 
 interface IBrokerStartOptions {
   server: string;
