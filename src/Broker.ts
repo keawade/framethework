@@ -27,7 +27,7 @@ export class Broker {
     this.connection = await NATS.connect({
       payload: NATS.Payload.JSON,
       url: options?.server || process.env.NATS_SERVER || 'nats://localhost',
-      port: options?.port || Number.parseInt(process.env.NATS_SERVER || '4222'),
+      port: options?.port || Number.parseInt(process.env.NATS_PORT || '4222'),
     });
 
     this.logger.info({ message: '[broker] connected' });
