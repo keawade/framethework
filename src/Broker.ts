@@ -8,7 +8,6 @@ import { Service } from './Service';
 
 interface IBrokerStartOptions {
   server: string;
-  port: number;
 }
 
 export class Broker {
@@ -26,7 +25,7 @@ export class Broker {
   public async start(options?: Partial<IBrokerStartOptions>): Promise<void> {
     const server = options?.server || process.env.NATS_SERVER || 'nats://localhost:4222';
 
-    this.logger.info({ message: `[broker] opening connection to NATS`, meta: { server } });
+    this.logger.info({ message: `[broker] opening connection to NATS`, server });
 
     this.connection = await NATS.connect({
       payload: NATS.Payload.JSON,
