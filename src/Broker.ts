@@ -15,10 +15,11 @@ export class Broker {
   public connection!: NATS.Client;
   private services: Service[] = [];
 
-  constructor() {
+  constructor(options?: { logging?: boolean }) {
     this.logger = winston.createLogger({
       format: winston.format.json(),
       transports: [new winston.transports.Console()],
+      silent: !(options?.logging ?? process.env.LOGGING_ENABLED === 'true'),
     });
   }
 

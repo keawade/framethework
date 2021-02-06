@@ -5,7 +5,7 @@ describe('actions', () => {
   let broker: Broker;
 
   beforeEach(async () => {
-    broker = new Broker();
+    broker = new Broker({ logging: false });
     broker.registerService(ActionService);
     await broker.start();
   });

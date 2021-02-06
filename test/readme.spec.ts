@@ -16,7 +16,7 @@ describe('readme example', () => {
       }
     }
 
-    const broker = new Broker();
+    const broker = new Broker({ logging: false });
     broker.registerService(MathService);
     await broker.start();
 
