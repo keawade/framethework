@@ -21,4 +21,4 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 
-ENTRYPOINT ["node", "./node_modules/@keawade/framethework/dist/bin/framethework-runner.js", "./dist/MathService.js"]
+ENTRYPOINT ["node", "./node_modules/@keawade/framethework/dist/bin/framethework-runner.js", "./dist/*Service.js"]

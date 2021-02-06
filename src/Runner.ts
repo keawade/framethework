@@ -1,10 +1,11 @@
-/* eslint-disable no-process-exit */
 import { default as yargs } from 'yargs';
 import { Broker } from './Broker';
 import { default as path } from 'path';
+import { sync as globby } from 'globby';
+import { ServiceClass } from './types/ServiceClass';
 
 export class Runner {
-  private broker: Broker;
+  public broker: Broker;
 
   constructor() {
     this.broker = new Broker();
@@ -13,41 +14,50 @@ export class Runner {
   public start(argv: string[]): Promise<void> {
     const args = yargs(argv.slice(2)).parse();
 
-    if (args._.length < 1) {
+    const resolvedClasses = this.resolveClassesFromPaths(args._.map((svcPath) => `${svcPath}`));
+
+    if (resolvedClasses.length < 1) {
       this.broker.logger.error('Service reference(s) required!');
-      process.exit(1);
+      throw new Error('Service reference(s) required!');
     }
 
-    const serviceClasses = args._.map((svcPath) => `${svcPath}`)
+    for (const resolved of resolvedClasses) {
+      if (!resolved.serviceClass) {
+        this.broker.logger.error(
+          `Failed to load service from default export of '${resolved.resolvedPath}'!`,
+        );
+        throw new Error(
+          `Failed to load service from default export of '${resolved.resolvedPath}'!`,
+        );
+      }
+
+      this.broker.registerService(resolved.serviceClass);
+    }
+
+    return this.broker.start();
+  }
+
+  public async stop(): Promise<void> {
+    return this.broker.stop();
+  }
+
+  private resolveClassesFromPaths = (
+    args: string[],
+  ): Array<{
+    resolvedPath: string;
+    serviceClass: ServiceClass | undefined;
+  }> =>
+    args
+      .reduce((acc: string[], val: string) => [...acc, ...globby(val)], [])
       .map((svcPath) => path.resolve(svcPath))
       .map((resolvedPath) => {
         try {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
-          const serviceClass = require(resolvedPath).default;
+          const serviceClass: ServiceClass | undefined = require(resolvedPath).default;
 
-          if (serviceClass === undefined) {
-            this.broker.logger.error(
-              `Failed to load service from default export of '${resolvedPath}'!`,
-            );
-            process.exit(1);
-          }
-
-          return serviceClass;
+          return { serviceClass, resolvedPath };
         } catch (err) {
-          this.broker.logger.error(`Failed to load module from '${resolvedPath}'!`);
-          throw err;
+          throw new Error(`Failed to load module from '${resolvedPath}'!`);
         }
       });
-
-    for (const serviceClass of serviceClasses) {
-      this.broker.registerService(serviceClass);
-    }
-
-    return this.broker.start().catch((err) => {
-      this.broker.logger.error('Failed to start services.');
-      console.error(err);
-      process.exit(1);
-    });
-  }
 }
-/* eslint-enable no-process-exit */

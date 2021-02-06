@@ -7,9 +7,10 @@
     "build": "tsc",
     "bump": "npm --no-git-tag-version version",
     "down": "docker-compose down",
+    "integration": "npm run up && npm run test && npm run down",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
-    "up": "docker-compose build && docker-compose up -d nats && sleep 2 && docker-compose up -d"
+    "up": "docker-compose build && docker-compose up -d"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@keawade/framethework": "^0.4.0-alpha.40"
+    "@keawade/framethework": "^0.4.2-alpha.46"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",

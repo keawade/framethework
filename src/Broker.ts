@@ -13,7 +13,8 @@ interface IBrokerStartOptions {
 export class Broker {
   public logger;
   public connection!: NATS.Client;
-  private services: Service[] = [];
+  public readonly services: Service[] = [];
+  private started = false;
 
   constructor(options?: { logging?: boolean }) {
     this.logger = winston.createLogger({
@@ -34,6 +35,8 @@ export class Broker {
       url: server,
     });
 
+    this.started = true;
+
     this.logger.info({ message: '[broker] connected' });
 
     this.logger.info({ message: '[broker] starting services...' });
@@ -44,7 +47,9 @@ export class Broker {
   }
 
   public async stop(): Promise<void> {
-    await this.connection.drain();
+    if (this.started) {
+      await this.connection.drain();
+    }
 
     this.logger.info({ message: '[broker] disconnected' });
   }
