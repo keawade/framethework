@@ -43,8 +43,9 @@ export class Runner {
       this.broker.registerService(serviceClass);
     }
 
-    return this.broker.start().catch(() => {
+    return this.broker.start().catch((err) => {
       this.broker.logger.error('Failed to start services.');
+      console.error(err);
       process.exit(1);
     });
   }
