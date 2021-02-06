@@ -1,16 +1,12 @@
-import { action, Broker, Service } from '../../src';
+import { action, Service } from '../../src';
 
 export interface IAddParams {
   a: number;
   b: number;
 }
 
-export class ActionService extends Service {
+export default class ActionService extends Service {
   public name = 'actionService';
-
-  constructor(broker: Broker) {
-    super(broker);
-  }
 
   @action()
   public foo(): 'foo' {

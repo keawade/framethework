@@ -35,5 +35,6 @@ module.exports = {
         allowModules: ['validator'],
       },
     ],
+    'node/shebang': ['off'],
   },
 };

@@ -1,13 +1,9 @@
-import { action, Broker, event, IEvent, Service } from '../../src';
+import { action, event, IEvent, Service } from '../../src';
 
-export class EventService extends Service {
+export default class EventService extends Service {
   public name = 'eventService';
 
   private events: unknown[] = [];
-
-  constructor(broker: Broker) {
-    super(broker);
-  }
 
   @action()
   public getEvents(): unknown[] {

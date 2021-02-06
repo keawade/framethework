@@ -1,11 +1,11 @@
 import { Broker } from '../src';
-import { ActionService, IAddParams } from './fixtures/ActionService';
+import { default as ActionService, IAddParams } from './fixtures/ActionService';
 
 describe('actions', () => {
   let broker: Broker;
 
   beforeEach(async () => {
-    broker = new Broker({ logger: false });
+    broker = new Broker();
     await broker.start([ActionService]);
   });
 

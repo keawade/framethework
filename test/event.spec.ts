@@ -1,5 +1,5 @@
 import { Broker, IEvent } from '../src';
-import { EventService } from './fixtures/EventService';
+import { default as EventService } from './fixtures/EventService';
 import { default as validator } from 'validator';
 import { differenceInMilliseconds, parseISO } from 'date-fns';
 import { loiter } from './testUtils/loiter';
@@ -9,7 +9,7 @@ describe('events', () => {
   let broker: Broker;
 
   beforeEach(async () => {
-    broker = new Broker({ logger: false });
+    broker = new Broker();
     await broker.start([EventService]);
   });
 

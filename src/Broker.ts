@@ -9,13 +9,10 @@ export class Broker {
   public logger;
   public connection!: NATS.Client;
 
-  constructor(options?: { logger?: boolean }) {
-    const loggerEnabled = options?.logger ?? true;
-
+  constructor() {
     this.logger = winston.createLogger({
       format: winston.format.json(),
       transports: [new winston.transports.Console()],
-      silent: !loggerEnabled,
     });
   }
 
@@ -36,7 +33,13 @@ export class Broker {
   }
 
   public async registerService(serviceClass: ServiceClass): Promise<void> {
-    const serviceInstance = new serviceClass(this);
+    let serviceInstance;
+    try {
+      serviceInstance = new serviceClass(this);
+    } catch (err) {
+      this.logger.error(`Failed to create service instance from '${serviceClass.name}' class!`);
+      throw err;
+    }
     this.logger.info({ message: `[broker] registering service`, name: serviceInstance.name });
     await serviceInstance.registerServiceEndpoints();
   }
