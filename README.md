@@ -52,6 +52,8 @@ create a broker and load your services.
 framethework-runner ./path/to/MyService.js
 ```
 
+Check out the `examples/` directory for some example services.
+
 ## Things I want to implement
 
 - Middlewares

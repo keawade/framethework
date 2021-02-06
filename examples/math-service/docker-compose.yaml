@@ -1,0 +1,16 @@
+version: '3.0'
+
+services:
+  math:
+    build:
+      context: .
+    environment:
+      NATS_SERVER: nats://nats:4222
+    depends_on:
+      - nats
+
+  nats:
+    image: nats:2.1.9
+    ports:
+      - '4222:4222'
+      - '8222:8222'
