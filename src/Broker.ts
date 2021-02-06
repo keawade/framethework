@@ -6,6 +6,11 @@ import { formatISO } from 'date-fns';
 import { IEvent } from './types';
 import { Service } from './Service';
 
+interface IBrokerStartOptions {
+  server: string;
+  port: number;
+}
+
 export class Broker {
   public logger;
   public connection!: NATS.Client;
@@ -18,11 +23,11 @@ export class Broker {
     });
   }
 
-  public async start(): Promise<void> {
+  public async start(options?: Partial<IBrokerStartOptions>): Promise<void> {
     this.connection = await NATS.connect({
       payload: NATS.Payload.JSON,
-      url: process.env.NATS_SERVER || 'nats://localhost',
-      port: Number.parseInt(process.env.NATS_SERVER || '4222'),
+      url: options?.server || process.env.NATS_SERVER || 'nats://localhost',
+      port: options?.port || Number.parseInt(process.env.NATS_SERVER || '4222'),
     });
 
     this.logger.info({ message: '[broker] connected' });
