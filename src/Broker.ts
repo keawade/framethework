@@ -19,7 +19,11 @@ export class Broker {
   }
 
   public async start(): Promise<void> {
-    this.connection = await NATS.connect({ payload: NATS.Payload.JSON });
+    this.connection = await NATS.connect({
+      payload: NATS.Payload.JSON,
+      url: process.env.NATS_SERVER || 'nats://localhost',
+      port: Number.parseInt(process.env.NATS_SERVER || '4222'),
+    });
 
     this.logger.info({ message: '[broker] connected' });
 
