@@ -36,5 +36,9 @@ module.exports = {
       },
     ],
     'node/shebang': ['off'],
+    // TODO: Investigate issues using expect(promise).rejects
+    'jest/no-jasmine-globals': ['off'],
+    'jest/no-conditional-expect': ['off'],
+    'jest/no-try-expect': ['off'],
   },
 };
