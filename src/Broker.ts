@@ -24,10 +24,15 @@ export class Broker {
   }
 
   public async start(options?: Partial<IBrokerStartOptions>): Promise<void> {
+    const server = options?.server || process.env.NATS_SERVER || 'nats://localhost';
+    const port = options?.port || Number.parseInt(process.env.NATS_PORT || '4222');
+
+    this.logger.info({ message: `[broker] opening connection to NATS`, meta: { server, port } });
+
     this.connection = await NATS.connect({
       payload: NATS.Payload.JSON,
-      url: options?.server || process.env.NATS_SERVER || 'nats://localhost',
-      port: options?.port || Number.parseInt(process.env.NATS_PORT || '4222'),
+      url: server,
+      port,
     });
 
     this.logger.info({ message: '[broker] connected' });
