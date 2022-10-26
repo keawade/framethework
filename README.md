@@ -1,3 +1,6 @@
+Note: I built this to play around with code patterns and abstractions _not_ as a
+serious attempt at building a good framework. Please don't use it.
+
 # Framethework
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/keawade/framethework/CI)](https://github.com/keawade/framethework/actions?query=workflow%3ACI)
@@ -21,7 +24,7 @@ class MathService extends Service {
   public name = 'math';
 
   @action()
-  public add(params: { a: number, b: number }): number {
+  public add(params: { a: number; b: number }): number {
     return params.a + params.b;
   }
 }
@@ -33,12 +36,13 @@ const broker = new Broker();
 broker.registerService(MathService);
 
 // Start the broker
-broker.start()
+broker
+  .start()
   // Call the service
   .then(() => broker.call('math.add', { a: 5, b: 3 }))
   // Print the response
-  .then(res => console.log('5 + 3 =', res))
-  .catch(err => console.error(`Error occurred! ${err.message}`));
+  .then((res) => console.log('5 + 3 =', res))
+  .catch((err) => console.error(`Error occurred! ${err.message}`));
 ```
 
 ## `framethework-runner`
